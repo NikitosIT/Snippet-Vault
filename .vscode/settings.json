@@ -1,0 +1,20 @@
+{
+  "jest.rootPath": "backend",
+  "jest.jestCommandLine": "npm test -- --runInBand",
+  "jest.autoRun": {
+    "watch": false,
+    "onStartup": [
+      "all-tests"
+    ]
+  },
+  "testing.automaticallyOpenPeekView": "never",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+  "files.associations": {
+    "tsconfig.json": "jsonc",
+    "tsconfig.*.json": "jsonc"
+  }
+}
