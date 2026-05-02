@@ -38,31 +38,33 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
       <SnippetFilters tags={tags} />
 
-      {snippetResponse.items.length ? (
-        <>
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {snippetResponse.items.map((snippet) => (
-              <SnippetCard key={snippet._id} snippet={snippet} />
-            ))}
-          </section>
+      <div className="min-h-[32rem] space-y-4">
+        {snippetResponse.items.length ? (
+          <>
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {snippetResponse.items.map((snippet) => (
+                <SnippetCard key={snippet._id} snippet={snippet} />
+              ))}
+            </section>
 
-          <SnippetPagination
-            page={snippetResponse.meta.page}
-            totalPages={snippetResponse.meta.totalPages}
-            query={q}
-            tag={tag}
-          />
-        </>
-      ) : (
-        <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-card">
-          <h2 className="text-xl font-semibold text-slate-900">
-            No snippets yet
-          </h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Create your first entry or adjust search and tag filters.
-          </p>
-        </section>
-      )}
+            <SnippetPagination
+              page={snippetResponse.meta.page}
+              totalPages={snippetResponse.meta.totalPages}
+              query={q}
+              tag={tag}
+            />
+          </>
+        ) : (
+          <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-card">
+            <h2 className="text-xl font-semibold text-slate-900">
+              No snippets yet
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">
+              Create your first entry or adjust search and tag filters.
+            </p>
+          </section>
+        )}
+      </div>
     </main>
   );
 }

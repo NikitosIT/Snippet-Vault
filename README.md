@@ -1,5 +1,7 @@
 # Snippet Vault
 
+Demo: [https://snippet-vault-frontend-alpha.vercel.app/](https://snippet-vault-frontend-alpha.vercel.app/)
+
 Простий fullstack-проєкт для збереження сніпетів: посилань, нотаток і команд.
 
 ## Як запустити локально
@@ -67,20 +69,20 @@ docker compose up -d mongo
 
 Якщо Docker не використовуєте, можна встановити MongoDB Community Server локально і запустити його звичайним способом.
 
-### 5. Запустити frontend
-
-```powershell
-cd frontend
-npm run dev
-```
-
-### 6. Запустити backend
+### 5. Запустити backend
 
 В іншому терміналі:
 
 ```powershell
 cd backend
 npm run start
+```
+
+### 6. Запустити frontend
+
+```powershell
+cd frontend
+npm run dev
 ```
 
 ### 7. Відкрити проєкт
@@ -204,3 +206,148 @@ Content-Type: application/json
 ```http
 DELETE /snippets/:id
 ```
+
+## Як задеплоїти в прод
+
+У моєму варіанті прод-деплой такий:
+
+- база даних — `MongoDB Atlas`
+- backend — `Render`
+- frontend — `Vercel`
+
+### 1. Підняти MongoDB Atlas
+
+1. Зареєструватися в [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)
+2. Створити безкоштовний кластер
+3. У `Database Access` створити користувача бази даних
+4. У `Network Access` додати доступ:
+
+```text
+0.0.0.0/0
+```
+
+Це потрібно, щоб Render міг підключитися до Atlas.
+
+5. Натиснути `Connect`
+6. Обрати `Drivers`
+7. Скопіювати рядок підключення
+
+Приклад:
+
+```env
+mongodb+srv://USERNAME:PASSWORD@cluster0.xxxxx.mongodb.net/snippet-vault?retryWrites=true&w=majority&appName=Cluster0
+```
+
+Це і буде ваш `MONGO_URI`.
+
+### 2. Підключити MongoDB Atlas до Compass
+
+Щоб дивитися записи в хмарній базі:
+
+1. Відкрити MongoDB Compass
+2. Вставити Atlas connection string
+3. Підключитися
+4. Відкрити базу:
+
+```text
+snippet-vault
+```
+
+5. Відкрити колекцію:
+
+```text
+snippets
+```
+
+### 3. Задеплоїти backend на Render
+
+1. Запушити проєкт у GitHub
+2. Зайти на [Render](https://render.com/)
+3. Створити `Web Service`
+4. Підключити GitHub репозиторій
+
+Що вказати:
+
+- `Root Directory`:
+
+```text
+backend
+```
+
+- `Build Command`:
+
+```text
+npm install && npm run build
+```
+
+- `Start Command`:
+
+```text
+npm run start:prod
+```
+
+### Змінні середовища для Render
+
+Приклад:
+
+```env
+PORT=10000
+FRONTEND_URL=https://your-frontend.vercel.app
+MONGO_URI=mongodb+srv://USERNAME:PASSWORD@cluster0.xxxxx.mongodb.net/snippet-vault?retryWrites=true&w=majority&appName=Cluster0
+```
+
+Важливо:
+
+- `PORT` — порт backend на Render
+- `FRONTEND_URL` — адреса frontend на Vercel
+- `MONGO_URI` — рядок підключення до MongoDB Atlas
+
+Після цього Render дасть публічний URL backend, наприклад:
+
+```text
+https://your-backend.onrender.com
+```
+
+### 4. Задеплоїти frontend на Vercel
+
+1. Зайти на [Vercel](https://vercel.com/)
+2. Створити новий проєкт
+3. Підключити GitHub репозиторій
+4. Для `Root Directory` вказати:
+
+```text
+frontend
+```
+
+### Змінні середовища для Vercel
+
+Приклад:
+
+```env
+NEXT_PUBLIC_API_URL=https://your-backend.onrender.com/api
+```
+
+Важливо:
+
+- `NEXT_PUBLIC_API_URL` має вказувати на backend URL з Render
+- в кінці потрібно додати `/api`
+
+### 5. Фінальна перевірка
+
+Після деплою перевірити:
+
+1. Чи відкривається frontend на Vercel
+2. Чи працює створення сніпетів
+3. Чи працює список
+4. Чи працює пошук
+5. Чи працює фільтр за тегом
+6. Чи працює редагування
+7. Чи працює видалення
+
+Також можна окремо перевірити backend:
+
+```text
+https://your-backend.onrender.com/api/snippets
+```
+
+Якщо відкривається JSON, backend працює правильно.
