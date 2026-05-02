@@ -32,7 +32,7 @@ export function useSnippetFilters() {
   }, [currentQuery, currentTag, debouncedQuery, router]);
 
   function setTag(tag: string) {
-    router.push(
+    router.replace(
       buildHomePath({
         q: query || undefined,
         tag: tag || undefined,
